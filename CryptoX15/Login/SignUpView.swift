@@ -9,10 +9,9 @@ import SwiftUI
 
 /// A view representing the sign up screen.
 struct SignUpView: View {
-    @EnvironmentObject var authService: FirebaseAuthService
+    @Environment(FirebaseAuthService.self) var authService
     //    @EnvironmentObject var portfolioManager: PortfolioManager
     @Environment(\.dismiss) private var dismiss
-    @Binding var authFlow: AuthenticationFlow
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -47,8 +46,7 @@ struct SignUpView: View {
             switch alertOption {
             case .success:
                 Button("OK") {
-                    dismiss()
-                    authFlow = .login
+                    dismiss()  
                 }
             case .failure(_):
                 Button("OK") {}
@@ -77,7 +75,6 @@ struct SignUpView: View {
     private var dismissButton: some View {
         Button("Cancel") {
             dismiss()
-            authFlow = .login
         }
         .foregroundStyle(.white)
     }

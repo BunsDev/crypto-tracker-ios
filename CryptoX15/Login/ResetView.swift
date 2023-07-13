@@ -14,9 +14,8 @@ enum AlertOption {
 
 /// A view representing the reset screen.
 struct ResetView: View {
-    @EnvironmentObject var authService: FirebaseAuthService
+    @Environment(FirebaseAuthService.self) var authService
     @Environment(\.dismiss) private var dismiss
-    @Binding var authFlow: AuthenticationFlow
     @State private var email = ""
     @State private var resetTask: Task<(), Never>?
     @State private var showAlert = false
@@ -83,7 +82,6 @@ struct ResetView: View {
     private var dismissButton: some View {
         Button("Cancel") {
             dismiss()
-            authFlow = .login
         }
         .foregroundStyle(.white)
         .padding()

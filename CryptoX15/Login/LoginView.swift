@@ -9,8 +9,7 @@ import SwiftUI
 
 /// A view representing the login screen.
 struct LoginView: View {
-    @EnvironmentObject var authService: FirebaseAuthService
-    @State private var authFlow: AuthenticationFlow = .login
+    @Environment(FirebaseAuthService.self) var authService
     @State private var email = ""
     @State private var password = ""
     @State private var showSignUp = false
@@ -89,8 +88,8 @@ struct LoginView: View {
                 try validation()
                 try await authService.signIn(with: email, and: password)
             } catch {
-                showAlert.toggle()
                 errorMessage = error.localizedDescription
+                showAlert.toggle()
             }
             signInTask?.cancel()
             signInTask = nil
@@ -113,14 +112,13 @@ struct LoginView: View {
         Button {
             focusedField = nil
             showReset.toggle()
-            authFlow = .reset
         } label: {
             Text("Forgot username or password?")
                 .bold()
                 .foregroundStyle(Color.accentColor)
         }
         .navigationDestination(isPresented: $showReset) {
-            ResetView(authFlow: $authFlow)
+            ResetView()
         }
     }
     
@@ -130,13 +128,12 @@ struct LoginView: View {
             Button {
                 focusedField = nil
                 showSignUp.toggle()
-                authFlow = .signUp
             } label: {
                 Text("Sign Up")
                     .foregroundStyle(Color.accentColor)
             }
             .navigationDestination(isPresented: $showSignUp) {
-                SignUpView(authFlow: $authFlow)
+                SignUpView()
             }
         }
     }

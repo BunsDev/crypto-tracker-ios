@@ -7,7 +7,6 @@
 
 import Foundation
 import FirebaseAuth
-import SwiftUI
 import SwiftData
 
 enum AuthenticationFlow {
@@ -66,12 +65,9 @@ extension AuthError: LocalizedError {
 }
 
 @Observable @MainActor
-final class FirebaseAuthService: ObservableObject {
+final class FirebaseAuthService {
     private(set) var authState: AuthenticationState = .unauthenticated
     private(set) var user: User? = nil
-    var authFlow: AuthenticationFlow = .login
-//    private(set) var errorMessage = ""
-//    private(set) var focusedField: Field? = nil
     
     private let auth = Auth.auth()
     private var authStateHandle: AuthStateDidChangeListenerHandle? = nil
@@ -80,25 +76,20 @@ final class FirebaseAuthService: ObservableObject {
         registerAuthStateHandle()
     }
     
-    func registerAuthStateHandle() {
-        print("executing")
+    private func registerAuthStateHandle() {
         if authStateHandle == nil {
-            authStateHandle = auth.addStateDidChangeListener { [weak self] _, user in
+            authStateHandle = auth.addStateDidChangeListener { [weak self] auth, user in
                 guard let self = self else { return }
-  //              if authFlow == .login {
-                    self.user = user
-                    self.authState = (user == nil ? .unauthenticated : .authenticated)
-  //              }
+                self.user = user
+                self.authState = (self.user == nil ? .unauthenticated : .authenticated)
             }
         }
-        print("finishing")
     }
     
     @discardableResult
     func signIn(with email: String, and password: String) async throws -> Bool {
-        let authResult = try await auth.signIn(withEmail: email, password: password)
-        user = authResult.user
-        authState = .authenticated
+        registerAuthStateHandle()
+        try await auth.signIn(withEmail: email, password: password)
         return true
     }
     
@@ -108,10 +99,11 @@ final class FirebaseAuthService: ObservableObject {
     }
     
     func signUp(with email: String, and password: String, and confirmPassword: String) async throws -> Bool {
-        print("1 \(user?.email ?? "no user")")
-        let authResult =  try await auth.createUser(withEmail: email, password: password)
-        user = authResult.user
-        print("2 \(user?.email ?? "no user")")
+        if let handle = authStateHandle {
+            auth.removeStateDidChangeListener(handle)
+        }
+        try await auth.createUser(withEmail: email, password: password)
+        try signOut()
         return true
     }
     

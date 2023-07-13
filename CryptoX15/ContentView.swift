@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(FirebaseAuthService.self) var authService
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        switch authService.authState {
+        case .unauthenticated:
+            LoginView()
+        case .authenticated:
+            VStack {
+                Text(authService.user?.providerID ?? " ")
+                Text("Welcome \(authService.user?.email ?? " ")")
+                Button("sign out") {
+                    do {
+                        try authService.signOut()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 
