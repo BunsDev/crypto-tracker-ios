@@ -19,6 +19,7 @@ struct SignUpView: View {
     @State private var showAlert = false
     @State private var alertOption: AlertOption = .success
     @FocusState private var focusedField: Field?
+    @Environment(\.modelContext) private var context
         
     private var alertTitle: String {
         switch alertOption {
@@ -41,12 +42,17 @@ struct SignUpView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.accentColor.gradient)
+        .background(.accent.gradient)
         .alert(alertTitle, isPresented: $showAlert) {
             switch alertOption {
             case .success:
                 Button("OK") {
-                    dismiss()  
+                    dismiss()
+                    do {
+                        try authService.signOut()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
             case .failure(_):
                 Button("OK") {}
@@ -57,12 +63,12 @@ struct SignUpView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) { dismissButton }
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    focusedField = nil
-                }
-            }
+//            ToolbarItemGroup(placement: .keyboard) {
+//                Spacer()
+//                Button("Done") {
+//                    focusedField = nil
+//                }
+//            }
         }
         .onSubmit(startSignUpTask)
         .onDisappear {
@@ -126,6 +132,10 @@ struct SignUpView: View {
                     alertOption = .success
                     focusedField = nil
 //                    await portfolioManager.createPortfolio()
+                    if let id = await authService.user?.email {
+                        context.insert(UserPortfolio(userID: id))
+                        print("ID to be saved in the local storage is \(id)")
+                    }
                 }
             } catch {
                 alertOption = .failure(error.localizedDescription)
@@ -133,6 +143,7 @@ struct SignUpView: View {
             showAlert.toggle()
             signUpTask?.cancel()
             signUpTask = nil
+            await print("after sign up auth.id \(authService.user?.email ?? "no user email")")
         }
     }
     
