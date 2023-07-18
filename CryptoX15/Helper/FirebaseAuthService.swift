@@ -18,6 +18,7 @@ enum AuthenticationFlow {
 enum AuthenticationState {
     case authenticated
     case unauthenticated
+    case authenticating
 }
 
 enum Regex: String {
@@ -66,9 +67,8 @@ extension AuthError: LocalizedError {
 
 @Observable @MainActor
 final class FirebaseAuthService {
-    private(set) var authState: AuthenticationState = .unauthenticated
+    private(set) var authState: AuthenticationState = .authenticating
     private(set) var user: User? = nil
-    
     private let auth = Auth.auth()
     private var authStateHandle: AuthStateDidChangeListenerHandle? = nil
     
@@ -81,15 +81,16 @@ final class FirebaseAuthService {
             authStateHandle = auth.addStateDidChangeListener { [weak self] auth, user in
                 guard let self = self else { return }
                 self.user = user
-                self.authState = (self.user == nil ? .unauthenticated : .authenticated)
+                self.authState = (user == nil ? .unauthenticated : .authenticated)
             }
         }
     }
     
     @discardableResult
     func signIn(with email: String, and password: String) async throws -> Bool {
-        registerAuthStateHandle()
-        try await auth.signIn(withEmail: email, password: password)
+        let authResult = try await auth.signIn(withEmail: email, password: password)
+        self.user = authResult.user
+        authState = .authenticated
         return true
     }
     
@@ -102,13 +103,14 @@ final class FirebaseAuthService {
         if let handle = authStateHandle {
             auth.removeStateDidChangeListener(handle)
         }
-        try await auth.createUser(withEmail: email, password: password)
-        try signOut()
+        let authResult = try await auth.createUser(withEmail: email, password: password)
+        self.user = authResult.user
         return true
     }
     
     func signOut() throws {
         try auth.signOut()
+        authState = .unauthenticated
     }
     
     func delete() async throws -> Bool {
