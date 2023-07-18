@@ -20,7 +20,7 @@ struct RoundedOutlineContainer<Content: View>: View {
             .padding()
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .strokeBorder(Color.accentColor, lineWidth: 2)
+                    .strokeBorder(.accent, lineWidth: 2)
             )
     }
 }
