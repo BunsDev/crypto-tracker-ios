@@ -46,7 +46,7 @@ struct ResetView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.accentColor.gradient)
+        .background(.accent.gradient)
         .alert(alertTitle, isPresented: $showAlert) {
             switch alertOption {
             case .success:
@@ -62,12 +62,12 @@ struct ResetView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) { dismissButton }
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    focusedField = nil
-                }
-            }
+//            ToolbarItemGroup(placement: .keyboard) {
+//                Spacer()
+//                Button("Done") {
+//                    focusedField = nil
+//                }
+//            }
         }
         .onSubmit(startResetTask)
         .onDisappear {
