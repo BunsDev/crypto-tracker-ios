@@ -16,7 +16,7 @@ struct PrimaryButton: View {
         Button(action: action) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.accentColor.opacity(0.9))
+                    .fill(.accent.opacity(0.9))
                     .frame(height: 48)
                 Text(text)
                     .font(.title2.bold())
