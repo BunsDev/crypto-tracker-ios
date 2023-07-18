@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  CryptoX15
 //
-//  Created by CJ on 7/12/23.
+//  Created by CJ on 7/7/23.
 //
 
 import SwiftUI
@@ -12,24 +12,13 @@ struct ContentView: View {
     
     var body: some View {
         switch authService.authState {
+        case .authenticating:
+            LaunchView()
         case .unauthenticated:
             LoginView()
         case .authenticated:
-            VStack {
-                Text(authService.user?.providerID ?? " ")
-                Text("Welcome \(authService.user?.email ?? " ")")
-                Button("sign out") {
-                    do {
-                        try authService.signOut()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                }
-            }
+            HomeTabView(service: authService)
         }
     }
 }
 
-#Preview {
-    ContentView()
-}
