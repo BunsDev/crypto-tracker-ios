@@ -26,20 +26,20 @@ struct LoginView: View {
                 mainSection
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.accentColor.gradient)
+            .background(.accent.gradient)
         }
         .alert("Login falied", isPresented: $showAlert) {
         } message: {
             Text(errorMessage)
         }
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    focusedField = nil
-                }
-            }
-        }
+//        .toolbar {
+//            ToolbarItemGroup(placement: .keyboard) {
+//                Spacer()
+//                Button("Done") {
+//                    focusedField = nil
+//                }
+//            }
+//        }
         .onSubmit(startSignInTask)
         .onDisappear {
             signInTask?.cancel()
@@ -93,6 +93,7 @@ struct LoginView: View {
             }
             signInTask?.cancel()
             signInTask = nil
+            await print("after sign in auth.id \(authService.user?.email ?? "no user email") ")
         }
     }
     
@@ -112,10 +113,12 @@ struct LoginView: View {
         Button {
             focusedField = nil
             showReset.toggle()
+            email = ""
+            password = ""
         } label: {
             Text("Forgot username or password?")
                 .bold()
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(.accent)
         }
         .navigationDestination(isPresented: $showReset) {
             ResetView()
@@ -128,9 +131,11 @@ struct LoginView: View {
             Button {
                 focusedField = nil
                 showSignUp.toggle()
+                email = ""
+                password = ""
             } label: {
                 Text("Sign Up")
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(.accent)
             }
             .navigationDestination(isPresented: $showSignUp) {
                 SignUpView()
