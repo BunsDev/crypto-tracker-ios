@@ -14,6 +14,7 @@ struct MarketView: View {
     @State private var isDescending = true
     @State private var searchText = ""
     @State private var refreshableTask: Task<(), Never>?
+    @Bindable var portfolio: UserPortfolio
     
     var updatedCoins: [Coin] {
         CoinListOperation.update(manager.coins, in: menuItem, by: sortOption, in: isDescending, by: searchText)
@@ -24,7 +25,7 @@ struct MarketView: View {
             VStack {
                 MenuBar(selectedItem: $menuItem)
                 SortSelection(selectedOption: $sortOption, isDescending: $isDescending)
-                CoinList(coins: updatedCoins)
+                CoinList(coins: updatedCoins, portfolio: portfolio)
             }
             .navigationTitle("Market")
         }

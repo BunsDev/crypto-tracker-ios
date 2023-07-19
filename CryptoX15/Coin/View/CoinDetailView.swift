@@ -14,9 +14,11 @@ struct CoinDetailView: View {
     @State private var showFullDescription = false
     @State private var showAllStats = false
     @State private var showTradeView = false
+    @Bindable var portfolio: UserPortfolio
     
-    init(coin: Coin) {
+    init(coin: Coin, portfolio: UserPortfolio) {
         _manager = State(wrappedValue: CoinDetailManager(coin: coin))
+        self.portfolio = portfolio
     }
     
     var body: some View {
@@ -49,7 +51,7 @@ struct CoinDetailView: View {
             Text("\(manager.coin.priceChange24HString) (\(manager.coin.priceChangePercentage24HString))")
                 .foregroundColor(manager.coin.priceChange24HDouble.gainLossColor)
             Spacer()
-            FavoriteButton(coin: manager.coin)
+            FavoriteButton(coin: manager.coin, portfolio: portfolio)
                 .font(.largeTitle)
                 .contentShape(Circle().offset(y: -10))
         }

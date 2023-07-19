@@ -14,10 +14,14 @@ struct HomeTabView: View {
     @Environment(\.modelContext) var context
     @State private var selection: Tab = .market
     @Query private var users: [UserPortfolio]
+    @Query private var coins: [UserFavoriteCoin]
+    
+    var portfolio: UserPortfolio {
+        users.first ?? UserPortfolio(userID: "")
+    }
     
     init(service: FirebaseAuthService) {
         if let id = service.user?.email {
-            print("HomeTabView current id: \(id)")
             _users = Query(filter: #Predicate { $0.userID == id })
         }
     }
@@ -40,17 +44,17 @@ struct HomeTabView: View {
 //                    Label("Home", systemImage: "house")
 //                }
 //                .tag(Tab.home)
-            WatchlistView(portfolio: users.first ?? UserPortfolio(userID: ""))
+            WatchlistView(portfolio: portfolio)
                 .tabItem {
                     Label("Watchlist", systemImage: "heart")
                 }
                 .tag(Tab.watchlist)
-            MarketView()
+            MarketView(portfolio: portfolio)
                 .tabItem {
                     Label("Market", systemImage: "network")
                 }
                 .tag(Tab.market)
-            PortfolioView(portfolio: users.first ?? UserPortfolio(userID: ""))
+            PortfolioView(portfolio: portfolio)
                 .tabItem {
                     Label("Portfolio", systemImage: "person")
                 }
@@ -69,8 +73,20 @@ struct HomeTabView: View {
 //                print(error.localizedDescription)
 //            }
             print("HomeTab onAppear")
+            print("UserPortfolios")
             for user in users {
                 print(user.userID)
+//                if let coins = user.favoriteCoins {
+//                    print("UserPortfolios.favoriteCoins")
+//                    for coin in coins {
+//                        print(coin.name)
+//                    }
+//                }
+            }
+            print("UserFavoriteCoins")
+            for coin in coins {
+                print(coin.name)
+                print(coin.userID)
             }
         }
     }

@@ -13,26 +13,20 @@ struct WatchlistView: View {
     @State private var sortOption: SortOption = .marketCapRank
     @State private var isDescending = true
     @State private var searchText = ""
-    @State private var coins: [UserFavoriteCoin] = []
-    
-    init(portfolio: UserPortfolio) {
-        if let value = portfolio.favoriteCoins {
-            _coins = State(wrappedValue: value)
-        }
-    }
+    @Bindable var portfolio: UserPortfolio
     
     var watchlistCoins: [Coin] {
-        let coins = coins.compactMap { manager.coinDic[$0.name] }
+        let coins = (portfolio.favoriteCoins?.filter({ $0.isFavorite }) ?? []).compactMap { manager.coinDic[$0.name] }
         return CoinListOperation.update(coins, by: sortOption, in: isDescending, by: searchText)
     }
     
     var body: some View {
         NavigationStack {
             VStack {
-                CoinScroll(coins: manager.top10MovingCoins)
+                CoinScroll(coins: manager.top10MovingCoins, portfolio: portfolio)
                     .padding(.bottom, 12)
                 SortSelection(selectedOption: $sortOption, isDescending: $isDescending)
-                CoinList(coins: watchlistCoins)
+                CoinList(coins: watchlistCoins, portfolio: portfolio)
             }
             .navigationTitle("Watchlist")
         }

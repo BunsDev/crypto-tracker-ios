@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CoinScroll: View {
     let coins: [Coin]
+    @Bindable var portfolio: UserPortfolio
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -18,7 +19,7 @@ struct CoinScroll: View {
                 HStack(spacing: 15) {
                     ForEach(coins) { coin in
                         NavigationLink {
-                            CoinDetailView(coin: coin)
+                            CoinDetailView(coin: coin, portfolio: portfolio)
                         } label: {
                             CoinCard(coin: coin)
                         }
