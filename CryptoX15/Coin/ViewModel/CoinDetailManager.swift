@@ -16,7 +16,6 @@ final class CoinDetailManager {
     private(set) var coinPrice7D: [CoinPricePair] = []
     private(set) var statRows: [StatRow] = []
     private(set) var error: Error? = nil
- //   private(set) var favoriteCoin = UserFavoriteCoin()
     
     init(coin: Coin) {
         self.coin = coin
@@ -61,26 +60,6 @@ final class CoinDetailManager {
             StatRow(title: "Max Supply", value: coin.maxSupplyString, isAlwaysVisible: false)
         ]
     }
-    
-//    func findUserCoin(context: ModelContext) {
-//        let coinPredicate = #Predicate<UserCoin> { $0.name == coin.nameString }
-//        let descriptor = FetchDescriptor<UserCoin>(predicate: coinPredicate)
-//        print(coinPredicate)
-//        print(descriptor)
-//        do {
-//            if let unwrappedCoin = try context.fetch(descriptor).first {
-//                print(unwrappedCoin)
-//                userCoin = unwrappedCoin
-//                userCoin.isFavorite.toggle()
-//                userCoin.timestamp = .now
-//            } else {
-//                userCoin = UserCoin(name: coin.nameString)
-//                context.insert(userCoin)
-//            }
-//        } catch {
-//            print("Find usercoin error: \(String(describing: error.localizedDescription))")
-//        }
-//    }
 }
 
 /// Represents a single row in the stats section.
