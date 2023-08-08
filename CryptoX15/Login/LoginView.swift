@@ -40,11 +40,9 @@ struct LoginView: View {
 //                }
 //            }
 //        }
-        .onSubmit(startSignInTask)
+        .onSubmit(executeSignInTask)
         .onDisappear {
             signInTask?.cancel()
-            signInTask = nil
-            focusedField = nil
         }
     }
     
@@ -79,10 +77,11 @@ struct LoginView: View {
     }
     
     private var signInButton: some View {
-        PrimaryButton(text: "Sign in", action: startSignInTask)
+        PrimaryButton(text: "Sign in", action: executeSignInTask)
     }
     
-    private func startSignInTask() {
+    private func executeSignInTask() {
+        signInTask?.cancel()
         signInTask = Task {
             do {
                 try validation()
@@ -91,9 +90,6 @@ struct LoginView: View {
                 errorMessage = error.localizedDescription
                 showAlert.toggle()
             }
-            signInTask?.cancel()
-            signInTask = nil
-            await print("after sign in auth.id \(authService.user?.email ?? "no user email") ")
         }
     }
     
@@ -111,10 +107,8 @@ struct LoginView: View {
     
     private var resetButton: some View {
         Button {
-            focusedField = nil
             showReset.toggle()
-            email = ""
-            password = ""
+            reset()
         } label: {
             Text("Forgot username or password?")
                 .bold()
@@ -129,10 +123,8 @@ struct LoginView: View {
         HStack {
             Text("New user?")
             Button {
-                focusedField = nil
                 showSignUp.toggle()
-                email = ""
-                password = ""
+                reset()
             } label: {
                 Text("Sign Up")
                     .foregroundStyle(.accent)
@@ -141,5 +133,11 @@ struct LoginView: View {
                 SignUpView()
             }
         }
+    }
+    
+    private func reset() {
+        focusedField = nil
+        email = ""
+        password = ""
     }
 }
