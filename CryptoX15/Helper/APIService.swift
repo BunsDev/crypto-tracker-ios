@@ -26,7 +26,7 @@ extension CoinError: LocalizedError {
 }
 
 /// A class provides method for downloading data from a REST API
-final class APIService {
+struct APIService {
     
     /// Downloads data from a given specified URL using an asynchronous operation.
     /// - Parameter url: The URL to download the data from.
