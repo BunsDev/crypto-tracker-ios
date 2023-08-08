@@ -10,14 +10,14 @@ import SwiftData
 
 struct CoinList: View {
     let coins: [Coin]
-    @Bindable var portfolio: UserPortfolio
+    @Bindable var user: UserProfile
     
     var body: some View {
         List {
             Section {
                 ForEach(coins) { coin in
                     NavigationLink {
-                        CoinDetailView(coin: coin, portfolio: portfolio)
+                        CoinDetailView(coin: coin, user: user)
                     } label: {
                         CoinRow(coin: coin)
                     }
