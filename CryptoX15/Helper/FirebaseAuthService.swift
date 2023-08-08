@@ -9,12 +9,6 @@ import Foundation
 import FirebaseAuth
 import SwiftData
 
-enum AuthenticationFlow {
-    case login
-    case signUp
-    case reset
-}
-
 enum AuthenticationState {
     case authenticated
     case unauthenticated
@@ -30,17 +24,17 @@ enum Regex: String {
     }
 }
 
+enum Field: Hashable {
+    case username
+    case password
+    case confirmPassword
+}
+
 enum AuthError: Error {
     case emptyPassword
     case invalidEmail
     case invalidPasswordFormat
     case unmatchedPassword
-}
-
-enum Field: Hashable {
-    case username
-    case password
-    case confirmPassword
 }
 
 extension AuthError: LocalizedError {
@@ -68,7 +62,7 @@ extension AuthError: LocalizedError {
 @Observable @MainActor
 final class FirebaseAuthService {
     private(set) var authState: AuthenticationState = .authenticating
-    private(set) var user: User? = nil
+    private(set) var user: User?
     private let auth = Auth.auth()
     private var authStateHandle: AuthStateDidChangeListenerHandle? = nil
     
@@ -113,28 +107,8 @@ final class FirebaseAuthService {
         authState = .unauthenticated
     }
     
-    func delete() async throws -> Bool {
+    func delete() async throws {
         try await user?.delete()
-        return true
+        authState = .unauthenticated
     }
-    
-//    func signOut() {
-//        do {
-//            try auth.signOut()
-//        } catch {
-//            errorMessage = error.localizedDescription
-//            print("Auth Service Error(sign out): \(errorMessage)")
-//        }
-//    }
-//    
-//    func delete() async -> Bool {
-//        do {
-//            try await user?.delete()
-//            return true
-//        } catch {
-//            errorMessage = error.localizedDescription
-//            print("Auth Service Error(delete): \(errorMessage)")
-//            return false
-//        }
-//    }
 }
