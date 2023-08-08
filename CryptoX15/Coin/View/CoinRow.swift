@@ -15,7 +15,7 @@ struct CoinRow: View {
         HStack {
             Text("")
             AsyncImage(url: URL(string: coin.imageURLString)) { image in
-                image.resizable().scaledToFit()
+                image.resizable().scaledToFill()
             } placeholder: {
                 ProgressView()
             }
@@ -43,6 +43,6 @@ struct CoinRow: View {
                 .foregroundStyle(coin.priceChange24HDouble.gainLossColor)
             }
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
     }
 }
