@@ -31,9 +31,8 @@ extension Double {
     /// Formats a Double value as a currency string with a specified number of decimal places.
     func asCurrencyWithDecimals() -> String {
         let formatter = NumberFormatter()
-    //    formatter.numberStyle = .currency
-        formatter.minimumFractionDigits = 2
-        return "$" + (formatter.string(from: NSNumber(value: self.inShortScale.0)) ?? "") + self.inShortScale.1
+        formatter.numberStyle = .currency
+        return (formatter.string(from: NSNumber(value: self.inShortScale.0)) ?? "") + self.inShortScale.1
     }
     
     /// Formates a Double value as a percentage with 2 decimal places
