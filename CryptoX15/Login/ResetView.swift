@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A enum representing alert options for the 'ResetView' and 'SignUpView'
 enum AlertOption {
     case failure(String)
     case success
@@ -69,13 +70,10 @@ struct ResetView: View {
 //                }
 //            }
         }
-        .onSubmit(startResetTask)
+        .onSubmit(executeResetTask)
         .onDisappear {
             resetTask?.cancel()
-            resetTask = nil
             timer?.invalidate()
-            timer = nil
-            focusedField = nil
         }
     }
   
@@ -110,11 +108,12 @@ struct ResetView: View {
     }
     
     private var resetButton: some View {
-        PrimaryButton(text: isButtonEnabled ? "Send Instructions" : "Send Again (\(countdown)S)", action: startResetTask)
+        PrimaryButton(text: isButtonEnabled ? "Send Instructions" : "Send Again (\(countdown)S)", action: executeResetTask)
             .disabled(!isButtonEnabled)
     }
     
-    private func startResetTask() {
+    private func executeResetTask() {
+        resetTask?.cancel()
         resetTask = Task {
             do {
                 try validation()
@@ -127,8 +126,6 @@ struct ResetView: View {
                 focusedField = .username
             }
             showAlert.toggle()
-            resetTask?.cancel()
-            resetTask = nil
         }
     }
     
