@@ -14,11 +14,11 @@ struct CoinDetailView: View {
     @State private var showFullDescription = false
     @State private var showAllStats = false
     @State private var showTradeView = false
-    @Bindable var portfolio: UserPortfolio
+    @Bindable var user: UserProfile
     
-    init(coin: Coin, portfolio: UserPortfolio) {
+    init(coin: Coin, user: UserProfile) {
         _manager = State(wrappedValue: CoinDetailManager(coin: coin))
-        self.portfolio = portfolio
+        self.user = user
     }
     
     var body: some View {
@@ -37,7 +37,7 @@ struct CoinDetailView: View {
             tradeButton
         }
         .fullScreenCover(isPresented: $showTradeView) {
-   //         TradePage(coinDetailManager: manager)
+            TradePage(coinDetailManager: manager)
         }
         .navigationTitle(manager.coin.currentPriceString)
         .toolbar(.hidden, for: .tabBar)
@@ -49,9 +49,9 @@ struct CoinDetailView: View {
     private var subHeadlineSection: some View {
         HStack {
             Text("\(manager.coin.priceChange24HString) (\(manager.coin.priceChangePercentage24HString))")
-                .foregroundColor(manager.coin.priceChange24HDouble.gainLossColor)
+                .foregroundStyle(manager.coin.priceChange24HDouble.gainLossColor)
             Spacer()
-            FavoriteButton(coin: manager.coin, portfolio: portfolio)
+            FavoriteButton(coin: manager.coin, user: user)
                 .font(.largeTitle)
                 .contentShape(Circle().offset(y: -10))
         }
@@ -61,18 +61,8 @@ struct CoinDetailView: View {
     private var tradeButton: some View {
         VStack {
             Spacer()
-            Button {
+            SecondaryButton(text: "Trade") {
                 showTradeView.toggle()
-            } label: {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.whiteAndBlack)
-                        .shadow(color: .accentColor, radius: 5)
-                        .frame(width: 96, height: 42)
-                    Text("Trade")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                }
             }
         }
     }
