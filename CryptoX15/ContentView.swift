@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         switch authService.authState {
         case .authenticating:
-            LaunchView()
+            TransitionView()
         case .unauthenticated:
             LoginView()
         case .authenticated:
