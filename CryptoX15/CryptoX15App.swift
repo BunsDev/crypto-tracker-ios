@@ -22,13 +22,15 @@ struct CryptoX15App: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var authService = FirebaseAuthService()
     @State private var coinManager = CoinManager()
+    @State private var portfolioManager = PortfolioManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(authService)
                 .environment(coinManager)
-                .modelContainer(for: [UserPortfolio.self, UserFavoriteCoin.self, UserCoinHolding.self])
+                .environment(portfolioManager)
+                .modelContainer(for: [UserProfile.self, FavoriteCoin.self])
         }
     }
 }
