@@ -10,7 +10,7 @@ import SwiftUI
 /// A view representing the sign up screen.
 struct SignUpView: View {
     @Environment(FirebaseAuthService.self) var authService
-    //    @EnvironmentObject var portfolioManager: PortfolioManager
+    @Environment(PortfolioManager.self) var portfolioManager
     @Environment(\.dismiss) private var dismiss
     @State private var email = ""
     @State private var password = ""
@@ -48,11 +48,6 @@ struct SignUpView: View {
             case .success:
                 Button("OK") {
                     dismiss()
-                    do {
-                        try authService.signOut()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
                 }
             case .failure(_):
                 Button("OK") {}
@@ -70,11 +65,9 @@ struct SignUpView: View {
 //                }
 //            }
         }
-        .onSubmit(startSignUpTask)
+        .onSubmit(executeSignUpTask)
         .onDisappear {
             signUpTask?.cancel()
-            signUpTask = nil
-            focusedField = nil
         }
     }
     
@@ -121,29 +114,27 @@ struct SignUpView: View {
     }
     
     private var signUpButton: some View {
-        PrimaryButton(text: "Sign Up", action: startSignUpTask)
+        PrimaryButton(text: "Sign Up", action: executeSignUpTask)
     }
     
-    private func startSignUpTask() {
+    private func executeSignUpTask() {
+        signUpTask?.cancel()
         signUpTask = Task {
             do {
                 try validation()
                 if try await authService.signUp(with: email, and: password, and: confirmPassword) {
                     alertOption = .success
                     focusedField = nil
-//                    await portfolioManager.createPortfolio()
-                    if let id = await authService.user?.email {
-                        context.insert(UserPortfolio(userID: id))
-                        print("ID to be saved in the local storage is \(id)")
+                    if let email = await authService.user?.email, let id = await authService.user?.uid {
+                        context.insert(UserProfile(email: email))
+                        await portfolioManager.createPortfolio(documentID: id, email: email)
                     }
                 }
+                try await authService.signOut()
             } catch {
                 alertOption = .failure(error.localizedDescription)
             }
             showAlert.toggle()
-            signUpTask?.cancel()
-            signUpTask = nil
-            await print("after sign up auth.id \(authService.user?.email ?? "no user email")")
         }
     }
     
