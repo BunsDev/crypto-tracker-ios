@@ -45,19 +45,31 @@ enum SortOption: String, CaseIterable, Identifiable {
     }
 }
 
-final class CoinListOperation {
+/// Provides utility methods for displaying a coin list based on user actions.
+struct CoinListOperation {
     
-    static func update(_ coins: [Coin], in menuItem: CoinMenuItem, by option: SortOption, in descendingOrder: Bool, by searchText: String) -> [Coin] {
-        let sortedCoins = update(coins, by: option, in: descendingOrder, by: searchText)
-        return filter(sortedCoins, by: menuItem)
-    }
-    
-    static func update(_ coins: [Coin], by option: SortOption, in descendingOrder: Bool, by searchText: String) -> [Coin] {
-        let filteredCoins = filter(coins, by: searchText)
-        return sort(filteredCoins, by: option, in: descendingOrder)
+    /// Updates an array of 'Coin' objects based on the specified filter, sort, and search parameters, all combined into one operation.
+    /// - Parameters:
+    ///   - coins: The array of 'Coin' objects to be updated.
+    ///   - menuItem: The selected menu item to filter the coins. (Can be nil)
+    ///   - option: The sorting criteria for the coins.
+    ///   - descendingOrder: A boolean value indicating whether the sorting should be in descending order (true) or ascending order (false).
+    ///   - searchText: The search text used to filter the coins based on their properties
+    /// - Returns: An array of 'Coin' objects
+    static func update(_ coins: [Coin], item: CoinMenuItem? = nil, option: SortOption, isDescending: Bool, text: String) -> [Coin] {
+        var filteredCoins = filter(coins, by: text)
+        if let menuItem = item {
+            filteredCoins = filter(filteredCoins, by: menuItem)
+        }
+        let sortedCoins = sort(filteredCoins, by: option, in: isDescending)
+        return sortedCoins
     }
     
     /// Filters an array of 'Coin' objects based on the currently selected menu item.
+    /// - Parameters:
+    ///   - coins: The array of 'Coin' objects to be updated.
+    ///   - menuItem: The selected menu item to filter the coins
+    /// - Returns: An array of 'Coin' objects
     static func filter(_ coins: [Coin], by menuItem: CoinMenuItem) -> [Coin] {
         return switch menuItem {
         case .cryptos:
@@ -69,7 +81,13 @@ final class CoinListOperation {
         }
     }
     
+    
     /// Sorts an array of 'Coin' objects based on a given sorting option and direction.
+    /// - Parameters:
+    ///   - coins: The array of 'Coin' objects to be updated.
+    ///   - option: The sorting criteria for the coins
+    ///   - descendingOrder: A boolean value indicating whether the sorting should be in descending order (true) or ascending order (false).
+    /// - Returns: An array of 'Coin' objects
     static func sort(_ coins: [Coin], by option: SortOption, in descendingOrder: Bool) -> [Coin] {
         return coins.sorted {
             switch option {
@@ -86,6 +104,10 @@ final class CoinListOperation {
     }
     
     /// Filters an array of `Coin` objects based on a search text.
+    /// - Parameters:
+    ///   - coins: The array of 'Coin' objects to be updated.
+    ///   - searchText: The search text used to filter the coins based on their properties
+    /// - Returns: An array of 'Coin' objects
     ///
     /// The function performs a case-insensitive search of each `Coin` object's `Name` and `Symbol` properties for a match with the provided `text`. If the `text` parameter is empty, the original array of `Coin` objects is returned unchanged.
     static func filter(_ coins: [Coin], by searchText: String) -> [Coin] {
