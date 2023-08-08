@@ -7,10 +7,8 @@
 
 import Foundation
 import Observation
-import SwiftData
 
-@Observable
-final class CoinDetailManager {
+@Observable final class CoinDetailManager {
     private(set) var coinDetail = CoinDetail()
     private(set) var coin = Coin()
     private(set) var coinPrice7D: [CoinPricePair] = []
@@ -27,7 +25,9 @@ final class CoinDetailManager {
         let url = "https://api.coingecko.com/api/v3/coins/\(coin.idString)?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         do {
             let data = try await APIService.downloadData(from: url)
-            coinDetail = try JSONDecoder().decode(CoinDetail.self, from: data)
+            try await MainActor.run {
+                coinDetail = try JSONDecoder().decode(CoinDetail.self, from: data)
+            }
         } catch {
             self.error = error
             print(error.localizedDescription)
