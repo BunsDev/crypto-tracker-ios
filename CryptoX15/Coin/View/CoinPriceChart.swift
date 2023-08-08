@@ -131,7 +131,3 @@ struct CoinPriceChart: View {
         static let stemYOffset: CGFloat = -10
     }
 }
-
-#Preview {
-    CoinPriceChart(manager: CoinDetailManager(coin: .testExample))
-}
