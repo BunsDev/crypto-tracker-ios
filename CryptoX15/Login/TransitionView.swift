@@ -12,7 +12,7 @@ struct TransitionView: View {
     var body: some View {
         Text("Cryptocoin")
             .font(.largeTitle.bold())
-            .foregroundStyle(.whiteAndBlack)
+            .foregroundStyle(.white)
             .shadow(color: .whiteAndBlack, radius: 50)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.accent.gradient)
