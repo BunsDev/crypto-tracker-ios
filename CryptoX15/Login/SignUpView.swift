@@ -126,11 +126,11 @@ struct SignUpView: View {
                     alertOption = .success
                     focusedField = nil
                     if let email = await authService.user?.email, let id = await authService.user?.uid {
-                        context.insert(UserProfile(email: email))
                         await portfolioManager.createPortfolio(documentID: id, email: email)
+                        context.insert(UserProfile(email: email))
+                        try await authService.signOut()
                     }
                 }
-                try await authService.signOut()
             } catch {
                 alertOption = .failure(error.localizedDescription)
             }
