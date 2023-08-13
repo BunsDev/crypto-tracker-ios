@@ -306,8 +306,6 @@
 				23D83C982A60753C00CE9AC1 /* CoinCard.swift */,
 				23D83C942A60753C00CE9AC1 /* CoinRow.swift */,
 				23D83C972A60753C00CE9AC1 /* CoinScroll.swift */,
-				23D83C952A60753C00CE9AC1 /* CoinDetailView.swift */,
-				23D83C992A60753C00CE9AC1 /* CoinPriceChart.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -322,6 +320,8 @@
 				23990C562A707FB00068C82B /* TradePage.swift */,
 				232E96CD2A68F3B40025A376 /* UserCard.swift */,
 				232E96CF2A68F3C80025A376 /* MyHolding.swift */,
+				23D83C952A60753C00CE9AC1 /* CoinDetailView.swift */,
+				23D83C992A60753C00CE9AC1 /* CoinPriceChart.swift */,
 			);
 			path = Tab;
 			sourceTree = "<group>";
