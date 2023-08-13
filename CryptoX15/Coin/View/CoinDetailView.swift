@@ -33,8 +33,9 @@ struct CoinDetailView: View {
                 }
                 .padding()
             }
-            .padding(.bottom, 65)
-            tradeButton
+            .safeAreaInset(edge: .bottom) {
+                tradeButton
+            }
         }
         .fullScreenCover(isPresented: $showTradeView) {
             TradePage(coinDetailManager: manager)
@@ -59,11 +60,8 @@ struct CoinDetailView: View {
     }
     
     private var tradeButton: some View {
-        VStack {
-            Spacer()
-            SecondaryButton(text: "Trade") {
-                showTradeView.toggle()
-            }
+        SecondaryButton(text: "Trade") {
+            showTradeView.toggle()
         }
     }
     
