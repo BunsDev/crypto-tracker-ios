@@ -23,18 +23,20 @@ struct PortfolioView: View {
                 VStack(spacing: 32) {
                     UserCard()
                     MyHolding(user: user)
-                    HStack {
-                        SecondaryButton(text: "Sign out") {
-                            try? authService.signOut()
-                        }
-                        Spacer()
-                        SecondaryButton(text: "Delete", textColor: .red.opacity(0.9), shadowColor: .red) {
-                            confirmDeletion.toggle()
-                        }
-                    }
-                    .padding()
                 }
                 .padding()
+            }
+            .safeAreaInset(edge: .bottom) {
+                HStack {
+                    SecondaryButton(text: "Sign out") {
+                        try? authService.signOut()
+                    }
+                    Spacer()
+                    SecondaryButton(text: "Delete", textColor: .red.opacity(0.9), shadowColor: .red) {
+                        confirmDeletion.toggle()
+                    }
+                }
+                .padding(24)
             }
             .scrollIndicators(.hidden)
             .navigationTitle("Portfolio")
