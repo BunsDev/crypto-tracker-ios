@@ -170,7 +170,6 @@ enum Prompt: String {
         let cashBalanceUpdate = FieldValue.increment(cashAdjustment)
         batch.updateData([UserPortfolio.CodingKeys.cashBalance.rawValue: cashBalanceUpdate], forDocument: docRef)
         do {
-    //        try await docRef.updateData([UserPortfolio.CodingKeys.holdings.rawValue: holdingUpdate])
             try await batch.commit()
             prompt = .success
             await fetchPortfolio(documentID: documentID)
