@@ -61,15 +61,9 @@ struct PortfolioView: View {
         deletitonTask?.cancel()
         deletitonTask = Task {
             do {
-                print("Start deleting portfolio data from Firestore")
                 await portfolioManager.deletePortfolio()
-                print("Deleted portfolio data from Firestore")
-                print("Start deleting auth data from Authentication")
                 try await authService.delete()
-                print("Deleted auth data from Authentication")
-                print("Start deleting portfolio data from local device")
                 context.delete(user)
-                print("Deleted portfolio data from local device")
             } catch {
                 print(error.localizedDescription)
             }

@@ -62,7 +62,7 @@ enum Prompt: String {
     
     /// Fetches the portfolio data associated with the specified document ID from the Firestore database.
     /// - Parameter documentID: The unique identifier of the portfolio document to fetch.
-    func fetchPortfolio(documentID: String) async {
+    @MainActor func fetchPortfolio(documentID: String) async {
         guard !documentID.isEmpty else {
             print("ID can not be empty.")
             return
@@ -70,9 +70,7 @@ enum Prompt: String {
         let docRef = docReference(documentID: documentID)
         do {
             let portfolio = try await docRef.getDocument(as: UserPortfolio.self)
-            await MainActor.run {
-                userPortfolio = portfolio
-            }
+            userPortfolio = portfolio
         } catch {
             print(String(describing: error.localizedDescription))
         }
@@ -120,7 +118,6 @@ enum Prompt: String {
             let newHolding = Holding(name: coin.nameString, symbol: coin.symbolString, quantity: quantity, buyPrice: buyPrice)
             await updatePortfolio(documentID: id, cashAdjustment: -cost, newHolding: newHolding)
         }
-        await fetchPortfolio(documentID: id)
     }
     
     /// Sells a specified quantity of a cryptocurrency and update the user's portfolio
@@ -149,7 +146,6 @@ enum Prompt: String {
         } else {
             prompt = .notHolding
         }
-        await fetchPortfolio(documentID: id)
     }
     
     /// Updates the user's portfolio in the Firestore database with adjustments related to cash balance and holdings.
@@ -161,28 +157,23 @@ enum Prompt: String {
     @MainActor private func updatePortfolio(documentID: String, cashAdjustment: Double, holding: Holding? = nil, newHolding: Holding? = nil) async {
         let batch = db.batch()
         let docRef = docReference(documentID: documentID)
-        // Removes a target coin from holdings array when (1) buying currently held coin (2) selling quantity == holding quantity
         if let holding = holding {
             let encodedHolding = try? encoder.encode(holding)
             let holdingUpdate = FieldValue.arrayRemove([encodedHolding ?? [:]])
-            do {
-                try await docRef.updateData([UserPortfolio.CodingKeys.holdings.rawValue: holdingUpdate])
-            } catch {
-                print(String(describing: error.localizedDescription))
-            }
+            batch.updateData([UserPortfolio.CodingKeys.holdings.rawValue: holdingUpdate], forDocument: docRef)
         }
-        // Updates target holding in holdings array
         if let newHolding = newHolding {
             let encodedNewHolding = try? encoder.encode(newHolding)
             let newHoldingUpdate = FieldValue.arrayUnion([encodedNewHolding ?? [:]])
             batch.updateData([UserPortfolio.CodingKeys.holdings.rawValue: newHoldingUpdate], forDocument: docRef)
         }
-        // Updates cashBalance
         let cashBalanceUpdate = FieldValue.increment(cashAdjustment)
         batch.updateData([UserPortfolio.CodingKeys.cashBalance.rawValue: cashBalanceUpdate], forDocument: docRef)
         do {
+    //        try await docRef.updateData([UserPortfolio.CodingKeys.holdings.rawValue: holdingUpdate])
             try await batch.commit()
             prompt = .success
+            await fetchPortfolio(documentID: documentID)
         } catch {
             print(String(describing: error.localizedDescription))
         }
