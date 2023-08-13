@@ -317,11 +317,11 @@
 				23D83CA92A60872800CE9AC1 /* WatchlistView.swift */,
 				23D83CA72A60871A00CE9AC1 /* MarketView.swift */,
 				23D83CAB2A60873100CE9AC1 /* PortfolioView.swift */,
+				23D83C952A60753C00CE9AC1 /* CoinDetailView.swift */,
 				23990C562A707FB00068C82B /* TradePage.swift */,
+				23D83C992A60753C00CE9AC1 /* CoinPriceChart.swift */,
 				232E96CD2A68F3B40025A376 /* UserCard.swift */,
 				232E96CF2A68F3C80025A376 /* MyHolding.swift */,
-				23D83C952A60753C00CE9AC1 /* CoinDetailView.swift */,
-				23D83C992A60753C00CE9AC1 /* CoinPriceChart.swift */,
 			);
 			path = Tab;
 			sourceTree = "<group>";

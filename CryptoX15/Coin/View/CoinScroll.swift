@@ -23,11 +23,18 @@ struct CoinScroll: View {
                             CoinDetailView(coin: coin, user: user)
                         } label: {
                             CoinCard(coin: coin)
+                                .scrollTransition(.interactive, axis: .horizontal) { content, phase in
+                                    content
+                                        .scaleEffect(phase.isIdentity ? 1 : 0.6)
+                                        .opacity(phase.isIdentity ? 1 : 0)
+                                }
                         }
                     }
                 }
                 .padding(.leading)
+                .scrollTargetLayout()
             }
+            .scrollTargetBehavior(.viewAligned)
         }
     }
 }
