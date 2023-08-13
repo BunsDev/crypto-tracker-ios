@@ -206,9 +206,7 @@ struct TradePage: View {
             case .sell:
                 await portfolioManager.sellCoin(coin: coin, sellPrice: price, quantity: quantity ?? 0)
             }
-            withAnimation {
-                showPromptMessage = true
-            }
+            showPromptMessage = true
             isFocused = false
             quantity = nil
         }
