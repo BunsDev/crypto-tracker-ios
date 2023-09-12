@@ -1,6 +1,8 @@
 # Crypto_IOS17
 A sample of a crypto app that provides a comprehensive platform for tracking cryptocurrency market information, executing transactions, managing favorite cryptocurrencies, and organizing portfolios.
 
+## Demo
+
 ![](https://github.com/CJRookie/Crypto_IOS17/blob/main/Demo/Crypto%20Demo%20IOS17%20-%202023-08-13.gif)
 
 ## Features
